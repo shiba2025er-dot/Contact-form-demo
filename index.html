@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم تماس با من</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f6fa;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    .container {
+      max-width: 450px;
+      margin: 80px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: inherit;
+    }
+    button {
+      background: #00a8ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0097e6;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>فرم تماس با من</h2>
+    <form id="contactForm">
+      <label>نام شما:</label>
+      <input type="text" id="name" required>
+      <label>ایمیل:</label>
+      <input type="email" id="email" required>
+      <label>موضوع:</label>
+      <input type="text" id="subject" required>
+      <label>پیام شما:</label>
+      <textarea id="message" rows="4" required></textarea>
+      <button type="submit">ارسال پیام</button>
+      <p id="responseMsg"></p>
+    </form>
+  </div>
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        subject: document.getElementById("subject").value,
+        message: document.getElementById("message").value
+      };
+      
+      const responseMsg = document.getElementById("responseMsg");
+      responseMsg.textContent = "در حال ارسال...";
+      
+      try {
+        const res = await fetch("https://bahram36.app.n8n.cloud/webhook/contact-demo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          responseMsg.textContent = "✅ پیام شما با موفقیت ارسال شد!";
+          responseMsg.className = "success";
+          document.getElementById("contactForm").reset();
+        } else {
+          responseMsg.textContent = "❌ ارسال ناموفق بود. لطفاً دوباره تلاش کنید.";
+          responseMsg.className = "error";
+        }
+      } catch (err) {
+        responseMsg.textContent = "❌ خطا در ارتباط با سرور.";
+        responseMsg.className = "error";
+      }
+    });
+  </script>
+</body>
+</html>
